@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: mutapixels-api
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: .
+    buildCommand: corepack enable && pnpm install --filter server... --frozen-lockfile && pnpm --filter server build
+    startCommand: node server/dist/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NEAR_RPC_URL
+        value: https://near-testnet.drpc.org,https://rpc.testnet.fastnear.com
+      - key: NFT_CONTRACT_ID
+        value: v2.mutapixels-192217.testnet
+      - key: MUT_TOKEN_ID
+        value: mut-token-192217.testnet
+      - key: REF_CONTRACT_ID
+        value: ref-finance-101.testnet
+      - key: REF_POOL_ID
+        value: "2946"
+      - key: GATE_RECIPIENT
+        value: mutapixels-lounge
+      - key: GATE_SECRET
+        generateValue: true
+      - key: RATE_LIMIT_CAPACITY
+        value: "300"
+      - key: CORS_ORIGIN
+        sync: false

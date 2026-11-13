@@ -28,4 +28,4 @@ services:
       - key: RATE_LIMIT_CAPACITY
         value: "300"
       - key: CORS_ORIGIN
-        sync: false
+        value: https://mutapixels.vercel.app

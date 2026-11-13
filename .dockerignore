@@ -1,0 +1,17 @@
+.git
+.gitignore
+.github
+contracts
+docs
+scripts
+README.md
+DEMO.md
+LICENSE
+**/node_modules
+**/.next
+**/target
+**/dist
+**/*.tsbuildinfo
+.env
+.env.*
+!.env.example

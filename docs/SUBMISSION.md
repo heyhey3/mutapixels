@@ -36,6 +36,22 @@ the application. Nothing here is sent automatically.
 
 Do not add `website`; it is a spam trap.
 
+### Fill and validate the payload
+
+```bash
+cp docs/submission.example.json docs/submission.json   # gitignored
+# Edit docs/submission.json with the real values.
+# Set consent: true only after reading the notice below.
+pnpm validate:submission
+```
+
+The validator checks the field set, lengths, track ids, URLs, UUID, mainnet address,
+consent and the 12,000-byte body limit. It prints the payload and never sends it. Keep
+the separate `requestId`; reuse it if the API returns a 400/503.
+
+> “I agree that the organizers may use these details to review our submission and
+> contact us about this hackathon.”
+
 ### Draft `idea`
 
 > Mutapixels is a NEP-171 NFT collection where each pixel is also a small on-chain

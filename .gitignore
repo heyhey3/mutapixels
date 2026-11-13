@@ -9,3 +9,6 @@ dist/
 !.env.example
 *.log
 .DS_Store
+
+# Filled application payload may contain personal contact details.
+docs/submission.json

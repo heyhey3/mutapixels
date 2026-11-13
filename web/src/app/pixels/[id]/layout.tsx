@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { API, formatNear } from "@/lib/api";
+import { SERVER_API, formatNear } from "@/lib/api";
 import type { Pixel } from "@/lib/types";
 
 type Props = { params: Promise<{ id: string }> };
@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!/^\d+$/.test(id)) return { title: "Pixel — Mutapixels" };
 
   try {
-    const res = await fetch(`${API}/api/pixels/${id}`, { cache: "no-store" });
+    const res = await fetch(`${SERVER_API}/api/pixels/${id}`, { cache: "no-store" });
     if (!res.ok) return { title: "Pixel — Mutapixels" };
     const pixel = (await res.json()) as Pixel;
     const title = `${pixel.name} · Mutapixels`;

@@ -7,6 +7,7 @@
     "dev:web": "pnpm --filter web dev",
     "build": "pnpm -r build",
     "test": "./scripts/test.sh",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "validate:submission": "node scripts/validate-submission.mjs docs/submission.json"
   }
 }

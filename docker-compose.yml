@@ -1,0 +1,32 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    env_file:
+      - server/.env
+    environment:
+      PORT: "8788"
+      CORS_ORIGIN: "http://localhost:3001"
+    ports:
+      - "8788:8788"
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8788
+        NEXT_PUBLIC_NFT_ID: v2.mutapixels-192217.testnet
+        NEXT_PUBLIC_MUT_ID: mut-token-192217.testnet
+        NEXT_PUBLIC_REF_ID: ref-finance-101.testnet
+        NEXT_PUBLIC_REF_POOL_ID: "2946"
+    environment:
+      # Server-side metadata fetch inside the compose network.
+      API_INTERNAL_URL: http://api:8788
+    ports:
+      - "3001:3000"
+    depends_on:
+      - api
+    restart: unless-stopped

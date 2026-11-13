@@ -1,0 +1,13 @@
+{
+  "requestId": "00000000-0000-4000-8000-000000000000",
+  "projectName": "Mutapixels",
+  "leadName": "Your Name",
+  "email": "you@example.com",
+  "size": "1",
+  "tracks": ["nfts"],
+  "nearAddress": "your-mainnet-account.near",
+  "projectUrl": "https://github.com/OWNER/mutapixels",
+  "demoUrl": "https://x.com/HANDLE/status/0000000000000000000",
+  "idea": "Mutapixels is a NEP-171 NFT collection where each pixel is also a small on-chain account. Minting seeds 15% of the price into a per-token vault; every mutation pays the token a 20% royalty, anyone can feed a pixel NEAR or $MUT, and only the current holder can withdraw. Sell the NFT and the vault, earnings history and holder-only lounge move with it. The contract enforces ownership at call time, approvals never grant vault access, and a MUT payout that fails after a sale is restored to the new holder. A NEP-413 signed-message gate with a live ownership re-check protects the holder page. $MUT trades in a real Ref Finance simple pool; the /ref page executes the swap natively against the Ref exchange contract, bypassing Ref's frontend RPC. The demo is on NEAR testnet; the repo includes 24 contract tests, a threat model, and a public renderer path.",
+  "consent": false
+}

@@ -1,0 +1,52 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.95.0
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - name: Mut token tests
+        run: cargo test --manifest-path contracts/mut_token/Cargo.toml
+      - name: Mutapixels tests
+        run: cargo test --manifest-path contracts/mutapixels/Cargo.toml
+
+  app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Secret scan
+        run: ./scripts/check-secrets.sh
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.9.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Server tests
+        run: pnpm --filter server test
+      - name: Typecheck
+        run: pnpm -r typecheck
+      - name: Web production build
+        run: pnpm --filter web build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8788
+          NEXT_PUBLIC_NFT_ID: v2.mutapixels-192217.testnet
+          NEXT_PUBLIC_MUT_ID: mut-token-192217.testnet
+          NEXT_PUBLIC_REF_ID: ref-finance-101.testnet
+          NEXT_PUBLIC_REF_POOL_ID: "2946"

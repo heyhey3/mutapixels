@@ -1,0 +1,12 @@
+{
+  "name": "mutapixels",
+  "private": true,
+  "packageManager": "pnpm@10.9.0",
+  "scripts": {
+    "dev:server": "pnpm --filter server dev",
+    "dev:web": "pnpm --filter web dev",
+    "build": "pnpm -r build",
+    "test": "./scripts/test.sh",
+    "typecheck": "pnpm -r typecheck"
+  }
+}

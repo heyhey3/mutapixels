@@ -12,7 +12,8 @@ the application. Nothing here is sent automatically.
 | `$MUT` | `mut-token-192217.testnet` |
 | Ref pool | `ref-finance-101.testnet`, pool `2946` |
 | Demo pixel | token `#1`, owner `dulllink7195.testnet`, vault `0.075 NEAR` |
-| Web / API | public (temporary quick tunnel): `https://difference-modes-amino-ellen.trycloudflare.com`; local: `http://localhost:3001` / `http://localhost:8788` |
+| Web | Vercel: `https://mutapixels.vercel.app` |
+| API / renderer | temporary quick tunnel: `https://difference-modes-amino-ellen.trycloudflare.com/api` (Render API pending); local: `http://localhost:8788` |
 | Renderer | public: `https://difference-modes-amino-ellen.trycloudflare.com/api/render` (set on v2) |
 | Public repo | **Published:** <https://github.com/heyhey3/mutapixels> — public, CI green |
 | X post / video | **TBD** |
@@ -148,7 +149,7 @@ if the video upload fails: `cover.png`, `pixel-1.png`, `ref.png`)
 ```text
 NFTs: just JPEGs. Mutapixels was built at NEAR HACKATHON: each token owns a vault, earns royalties, keeps history, and gates a lounge.
 
-Demo: https://difference-modes-amino-ellen.trycloudflare.com
+Demo: https://mutapixels.vercel.app
 Code: https://github.com/heyhey3/mutapixels
 
 Should the vault move on resale? Feedback welcome.

@@ -45,7 +45,7 @@ The root post (the submission's `demoUrl`) must contain:
 ```text
 NFTs: just JPEGs. Mutapixels was built at NEAR HACKATHON: each token owns a vault, earns royalties, keeps history, and gates a lounge.
 
-Demo: https://difference-modes-amino-ellen.trycloudflare.com
+Demo: https://mutapixels.vercel.app
 Code: https://github.com/heyhey3/mutapixels
 
 Should the vault move on resale? Feedback welcome.

@@ -3,11 +3,13 @@
 The submission needs a public demo and a public renderer. These are the two
 supported paths. Nothing here is automatic; you choose the host and domain.
 
-> **Current demo (2026-11-13):** a temporary Cloudflare quick tunnel is live at
-> <https://difference-modes-amino-ellen.trycloudflare.com>; the API is same-origin
-> through a Next rewrite, and the v2 renderer points at
-> `https://difference-modes-amino-ellen.trycloudflare.com/api/render`. Quick tunnels
-> have no uptime guarantee and change URL on restart. Use Option B for judging.
+> **Current demo (2026-11-13):** the web is deployed on **Vercel** at
+> <https://mutapixels.vercel.app>. Its API is still the temporary Cloudflare quick
+> tunnel <https://difference-modes-amino-ellen.trycloudflare.com>; the v2 renderer
+> points at that tunnel's `/api/render`. The Vercel production env already contains
+> the tunnel URL. Once Render is live, update `NEXT_PUBLIC_API_URL` and
+> `API_INTERNAL_URL` in Vercel, redeploy, and point `set_renderer_base` at the Render
+> `/api/render`. Quick tunnels have no uptime guarantee and change URL on restart.
 
 ## Option A — one host with Docker Compose
 

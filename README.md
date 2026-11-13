@@ -16,8 +16,8 @@ Built for **NEAR Hackathon 2026** · primary track: **`nfts`** (“what comes af
 | `$MUT` (NEP-141) | `mut-token-192217.testnet` |
 | Ref Finance pool | `ref-finance-101.testnet` · pool **2946** (`$MUT / wNEAR`) |
 | Legacy v1 NFT | `mutapixels-192217.testnet` (original 3 pixels, kept untouched) |
-| Web (public demo, temporary) | <https://difference-modes-amino-ellen.trycloudflare.com> |
-| API / renderer / lounge gate (same origin) | <https://difference-modes-amino-ellen.trycloudflare.com/api> |
+| Web (Vercel production) | <https://mutapixels.vercel.app> |
+| API / renderer / lounge gate (current, temporary) | <https://difference-modes-amino-ellen.trycloudflare.com/api> |
 | Local dev | `http://localhost:3001` / `http://localhost:8788` |
 | Public repository | <https://github.com/heyhey3/mutapixels> |
 
@@ -27,13 +27,15 @@ Built for **NEAR Hackathon 2026** · primary track: **`nfts`** (“what comes af
 > at v2. `get_config` on v2 returns `vault_seed_bps: 1500`, `mutation_vault_bps: 2000`,
 > `mutation_treasury_bps: 2000`, `mutation_burn_bps: 6000`.
 >
-> The public demo is currently a **Cloudflare quick tunnel**; the API is same-origin
-> through a Next rewrite. The on-chain renderer is set to
-> `https://difference-modes-amino-ellen.trycloudflare.com/api/render` and token #1
-> metadata was refreshed. Quick tunnels have no uptime guarantee and change URL if
-> restarted; for durable judging deploy Vercel + Render per
-> [`docs/DEPLOY.md`](docs/DEPLOY.md) and call `set_renderer_base` with the durable API
-> URL. The `MODE=migrate` and `MODE=new` paths in
+> The **web is on Vercel** (<https://mutapixels.vercel.app>). The **API is still a
+> temporary Cloudflare quick tunnel**; Vercel was built with the tunnel as its API, and
+> the on-chain renderer points at
+> `https://difference-modes-amino-ellen.trycloudflare.com/api/render`. Quick tunnels
+> have no uptime guarantee and change URL if restarted. The durable API path is the
+> committed Render Blueprint (`render.yaml`, `docs/DEPLOY.md`); once Render is live,
+> update `NEXT_PUBLIC_API_URL` / `API_INTERNAL_URL` in Vercel, redeploy, and call
+> `set_renderer_base` with the Render `/api/render` URL.
+> The `MODE=migrate` and `MODE=new` paths in
 > [`scripts/deploy-testnet.sh`](scripts/deploy-testnet.sh) remain available for other
 > environments.
 >
@@ -362,12 +364,16 @@ for `MODE=new`).
 
 ### Public demo hosting
 
-`server/Dockerfile`, `web/Dockerfile` and `docker-compose.yml` are smoke-tested with
-Docker: `docker compose up --build` serves the API on `:8788` and the web on `:3001`.
-For a real host, set `CORS_ORIGIN`, build the web with the public
-`NEXT_PUBLIC_API_URL`, set `API_INTERNAL_URL` for server-side metadata, then call
-`set_renderer_base` and `refresh_metadata_batch`. The full path (Docker or
-Vercel/Render) is in [`docs/DEPLOY.md`](docs/DEPLOY.md).
+The web is live on **Vercel** at <https://mutapixels.vercel.app>; its production env
+currently points at the temporary quick-tunnel API. The durable API path is the
+committed Render Blueprint (`render.yaml`); once Render is live, update
+`NEXT_PUBLIC_API_URL` / `API_INTERNAL_URL` in Vercel and redeploy. `server/Dockerfile`,
+`web/Dockerfile` and `docker-compose.yml` are also smoke-tested with Docker
+(`docker compose up --build` serves the API on `:8788` and the web on `:3001`). For a
+real host, set `CORS_ORIGIN`, build the web with the public `NEXT_PUBLIC_API_URL`, set
+`API_INTERNAL_URL` for server-side metadata, then call `set_renderer_base` and
+`refresh_metadata_batch`. The full path (Docker or Vercel/Render) is in
+[`docs/DEPLOY.md`](docs/DEPLOY.md).
 
 For an existing v1 deployment, `migrate` preserves the token map and fills new maps
 with empty vaults/histories. New activity credits the vaults; old tokens start at

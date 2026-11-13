@@ -354,6 +354,15 @@ After deployment, update the **Live testnet** table at the top of this README,
 `server/.env` and `web/.env.local` to the new NFT account (and new `$MUT` account only
 for `MODE=new`).
 
+### Public demo hosting
+
+`server/Dockerfile`, `web/Dockerfile` and `docker-compose.yml` are smoke-tested with
+Docker: `docker compose up --build` serves the API on `:8788` and the web on `:3001`.
+For a real host, set `CORS_ORIGIN`, build the web with the public
+`NEXT_PUBLIC_API_URL`, set `API_INTERNAL_URL` for server-side metadata, then call
+`set_renderer_base` and `refresh_metadata_batch`. The full path (Docker or
+Vercel/Render) is in [`docs/DEPLOY.md`](docs/DEPLOY.md).
+
 For an existing v1 deployment, `migrate` preserves the token map and fills new maps
 with empty vaults/histories. New activity credits the vaults; old tokens start at
 zero. The contract storage keys for v1 are unchanged, so the upgrade is in place.
@@ -461,9 +470,13 @@ mutapixels/
 │   └── deploy-testnet.sh
 ├── docs/
 │   ├── SUBMISSION.md       application fields, X thread, publish/renderer steps
+│   ├── DEPLOY.md           Docker / Vercel + Render public demo path
 │   ├── KEYS.md             privileged-key inspect/remove checklist
 │   └── screenshots/        cover, index, pixel, ref
 ├── .github/workflows/ci.yml
+├── server/Dockerfile
+├── web/Dockerfile
+├── docker-compose.yml
 ├── README.md
 ├── DEMO.md
 └── LICENSE

@@ -16,8 +16,9 @@ Built for **NEAR Hackathon 2026** · primary track: **`nfts`** (“what comes af
 | `$MUT` (NEP-141) | `mut-token-192217.testnet` |
 | Ref Finance pool | `ref-finance-101.testnet` · pool **2946** (`$MUT / wNEAR`) |
 | Legacy v1 NFT | `mutapixels-192217.testnet` (original 3 pixels, kept untouched) |
-| Web | `http://localhost:3001` |
-| API / renderer / lounge gate | `http://localhost:8788` |
+| Web (public demo, temporary) | <https://difference-modes-amino-ellen.trycloudflare.com> |
+| API / renderer / lounge gate (same origin) | <https://difference-modes-amino-ellen.trycloudflare.com/api> |
+| Local dev | `http://localhost:3001` / `http://localhost:8788` |
 | Public repository | <https://github.com/heyhey3/mutapixels> |
 
 > **Deployment status.** v2 is deployed at `v2.mutapixels-192217.testnet` and reuses
@@ -26,11 +27,15 @@ Built for **NEAR Hackathon 2026** · primary track: **`nfts`** (“what comes af
 > at v2. `get_config` on v2 returns `vault_seed_bps: 1500`, `mutation_vault_bps: 2000`,
 > `mutation_treasury_bps: 2000`, `mutation_burn_bps: 6000`.
 >
-> The renderer is currently `http://localhost:8788/api/render` for the local demo.
-> Token metadata therefore resolves only while the local API is running; call
-> `set_renderer_base` (owner) after deploying the API publicly. The `MODE=migrate` and
-> `MODE=new` paths in [`scripts/deploy-testnet.sh`](scripts/deploy-testnet.sh) remain
-> available for other environments.
+> The public demo is currently a **Cloudflare quick tunnel**; the API is same-origin
+> through a Next rewrite. The on-chain renderer is set to
+> `https://difference-modes-amino-ellen.trycloudflare.com/api/render` and token #1
+> metadata was refreshed. Quick tunnels have no uptime guarantee and change URL if
+> restarted; for durable judging deploy Vercel + Render per
+> [`docs/DEPLOY.md`](docs/DEPLOY.md) and call `set_renderer_base` with the durable API
+> URL. The `MODE=migrate` and `MODE=new` paths in
+> [`scripts/deploy-testnet.sh`](scripts/deploy-testnet.sh) remain available for other
+> environments.
 >
 > v2 currently holds **one pixel** (token #1, minted from the web app; vault seeded
 > with 0.075 NEAR). Mint more from the web app. The old v1 contract still holds its

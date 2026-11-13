@@ -12,8 +12,8 @@ the application. Nothing here is sent automatically.
 | `$MUT` | `mut-token-192217.testnet` |
 | Ref pool | `ref-finance-101.testnet`, pool `2946` |
 | Demo pixel | token `#1`, owner `dulllink7195.testnet`, vault `0.075 NEAR` |
-| Web / API | local: `http://localhost:3001` / `http://localhost:8788` |
-| Renderer | `http://localhost:8788/api/render` — **must be public before submission** |
+| Web / API | public (temporary quick tunnel): `https://difference-modes-amino-ellen.trycloudflare.com`; local: `http://localhost:3001` / `http://localhost:8788` |
+| Renderer | public: `https://difference-modes-amino-ellen.trycloudflare.com/api/render` (set on v2) |
 | Public repo | **Published:** <https://github.com/heyhey3/mutapixels> — public, CI green |
 | X post / video | **TBD** |
 | Application | **Not sent** |
@@ -68,13 +68,16 @@ the separate `requestId`; reuse it if the API returns a 400/503.
 
 ## Public deployment before the X post
 
-The demo cannot be judged from `localhost`. Do one of:
+The demo cannot be judged from `localhost`. Current state: a temporary Cloudflare
+quick tunnel is live at <https://difference-modes-amino-ellen.trycloudflare.com>, and
+the v2 renderer points at its `/api/render`. The tunnel is not durable; before final
+judging, do one of:
 
-1. **Host the API and web** (preferred): deploy `server` on a Node host and `web` on
-   Vercel/Fly; set `NEXT_PUBLIC_API_URL` to the public API, set `RENDERER_BASE` to
-   `<api>/api/render`, call `set_renderer_base` as the owner, then call
-   `refresh_metadata_batch` for token #1. Set a fresh `GATE_SECRET` and
-   `CORS_ORIGIN=<web origin>` on the API.
+1. **Host the API and web durably** (preferred): deploy `server` on Render and `web`
+   on Vercel (the committed `render.yaml` is the Render Blueprint); set
+   `NEXT_PUBLIC_API_URL` / `API_INTERNAL_URL` to the public API, set `CORS_ORIGIN` to
+   the web origin, call `set_renderer_base` with `<api>/api/render`, then call
+   `refresh_metadata_batch` for token #1.
 2. **Local-only + video**: record the full mint → feed → mutate → withdraw → transfer
    → lounge flow (see `DEMO.md`), attach it to the X post, and state that the demo is
    local/testnet. The repository README has the run commands.
@@ -145,7 +148,7 @@ if the video upload fails: `cover.png`, `pixel-1.png`, `ref.png`)
 ```text
 NFTs: just JPEGs. Mutapixels was built at NEAR HACKATHON: each token owns a vault, earns royalties, keeps history, and gates a lounge.
 
-Demo: <PUBLIC_DEMO_URL>
+Demo: https://difference-modes-amino-ellen.trycloudflare.com
 Code: https://github.com/heyhey3/mutapixels
 
 Should the vault move on resale? Feedback welcome.

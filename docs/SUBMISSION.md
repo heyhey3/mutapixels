@@ -14,7 +14,7 @@ the application. Nothing here is sent automatically.
 | Demo pixel | token `#1`, owner `dulllink7195.testnet`, vault `0.075 NEAR` |
 | Web / API | local: `http://localhost:3001` / `http://localhost:8788` |
 | Renderer | `http://localhost:8788/api/render` — **must be public before submission** |
-| Public repo | **TBD** (the working tree is not a git repository yet) |
+| Public repo | **Published:** <https://github.com/heyhey3/mutapixels> — public, CI green |
 | X post / video | **TBD** |
 | Application | **Not sent** |
 
@@ -29,7 +29,7 @@ the application. Nothing here is sent automatically.
 | `size` | **TBD**: `1`, `2 - 4`, `4 - 6`, `6 - 8`, `8+` |
 | `tracks` | `["nfts"]` (primary). Add `social` only if the holder-lounge angle is genuinely being defended. |
 | `nearAddress` | **TBD**: a mainnet payout account the human controls; never a testnet address |
-| `projectUrl` | **TBD**: the public repository URL |
+| `projectUrl` | `https://github.com/heyhey3/mutapixels` |
 | `demoUrl` | **TBD**: the public X post URL (the root post of the thread), not localhost |
 | `idea` | draft below, 20–2000 chars |
 | `consent` | `true` only after the human reads the notice |
@@ -85,9 +85,9 @@ the v2 contract account key. After a public renderer is set, verify the media UR
 
 ### Publish the repository (human)
 
-The working tree is not a git repository yet. After reviewing `git status` and
-confirming that `server/.env`, `web/.env.local` and `~/.near-credentials` are outside
-the tree:
+The repository is published at <https://github.com/heyhey3/mutapixels> (public, CI
+green). The commands below are the reproducible path if it ever needs to be recreated;
+`server/.env`, `web/.env.local` and `~/.near-credentials` stay outside the tree.
 
 ```bash
 cd /path/to/mutapixels
@@ -146,7 +146,7 @@ if the video upload fails: `cover.png`, `pixel-1.png`, `ref.png`)
 NFTs: just JPEGs. Mutapixels was built at NEAR HACKATHON: each token owns a vault, earns royalties, keeps history, and gates a lounge.
 
 Demo: <PUBLIC_DEMO_URL>
-Code: <PUBLIC_REPO_URL>
+Code: https://github.com/heyhey3/mutapixels
 
 Should the vault move on resale? Feedback welcome.
 
@@ -196,7 +196,7 @@ replace it only if the demo is publicly reachable.
 
 ## Pre-submit checklist
 
-- [ ] Public repository exists, stays public through judging, and has CI green.
+- [x] Public repository exists, stays public through judging, and has CI green.
 - [ ] `LICENSE`, README run path, threat model and disclosure are in the repo.
 - [ ] v2 contract-account full-access key removal decided and disclosed.
 - [ ] $MUT token-account key removal/secure decision disclosed; the token owner can mint.

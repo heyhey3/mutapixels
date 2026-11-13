@@ -46,7 +46,7 @@ The root post (the submission's `demoUrl`) must contain:
 NFTs: just JPEGs. Mutapixels was built at NEAR HACKATHON: each token owns a vault, earns royalties, keeps history, and gates a lounge.
 
 Demo: <PUBLIC_DEMO_URL>
-Code: <PUBLIC_REPO_URL>
+Code: https://github.com/heyhey3/mutapixels
 
 Should the vault move on resale? Feedback welcome.
 
@@ -59,7 +59,7 @@ only in a reply; the root is the `demoUrl` reviewers open.
 
 ## Submission checklist
 
-- [ ] Repository is public and stays public through judging
+- [x] Repository is public and stays public through judging
 - [ ] README has the live addresses, reproducible steps, threat model and disclosures
 - [ ] Web + API are public and `renderer_base` points at the public API (or the X post
       has a complete demo video and says the demo is local/testnet)

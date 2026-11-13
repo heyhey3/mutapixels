@@ -18,6 +18,7 @@ Built for **NEAR Hackathon 2026** · primary track: **`nfts`** (“what comes af
 | Legacy v1 NFT | `mutapixels-192217.testnet` (original 3 pixels, kept untouched) |
 | Web | `http://localhost:3001` |
 | API / renderer / lounge gate | `http://localhost:8788` |
+| Public repository | <https://github.com/heyhey3/mutapixels> |
 
 > **Deployment status.** v2 is deployed at `v2.mutapixels-192217.testnet` and reuses
 > the existing `$MUT` and Ref Finance pool. The v1 contract at
@@ -501,9 +502,11 @@ mutapixels/
 
 ## Submission
 
-Not sent. The public repository, public demo/renderer, demo video and X thread are the
-remaining human actions. The full field table, 5-post X thread, hosting checklist and
-pre-submit checklist are in [`docs/SUBMISSION.md`](docs/SUBMISSION.md). The live rules
+Not sent. The public repository is live at
+<https://github.com/heyhey3/mutapixels> (CI green). The public demo/renderer, demo
+video and X thread are the remaining human actions. The full field table, 5-post X
+thread, hosting checklist and pre-submit checklist are in
+[`docs/SUBMISSION.md`](docs/SUBMISSION.md). The live rules
 are at <https://nearhackathon.com/HACKATHON.md>; the deadline is
 **2026-11-14T23:59:00Z**.
 

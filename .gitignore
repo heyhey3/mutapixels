@@ -12,3 +12,6 @@ dist/
 
 # Filled application payload may contain personal contact details.
 docs/submission.json
+
+# Vercel local link metadata
+.vercel/

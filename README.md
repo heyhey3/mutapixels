@@ -16,8 +16,7 @@ Built for **NEAR Hackathon 2026** · primary track: **`nfts`** (“what comes af
 | `$MUT` (NEP-141) | `mut-token-192217.testnet` |
 | Ref Finance pool | `ref-finance-101.testnet` · pool **2946** (`$MUT / wNEAR`) |
 | Legacy v1 NFT | `mutapixels-192217.testnet` (original 3 pixels, kept untouched) |
-| Web (Vercel production) | <https://mutapixels.vercel.app> |
-| API / renderer / lounge gate (current, temporary) | <https://difference-modes-amino-ellen.trycloudflare.com/api> |
+| Web + API (Vercel production) | <https://mutapixels.vercel.app> · API at `/api` (same origin) |
 | Local dev | `http://localhost:3001` / `http://localhost:8788` |
 | Public repository | <https://github.com/heyhey3/mutapixels> |
 
@@ -27,15 +26,12 @@ Built for **NEAR Hackathon 2026** · primary track: **`nfts`** (“what comes af
 > at v2. `get_config` on v2 returns `vault_seed_bps: 1500`, `mutation_vault_bps: 2000`,
 > `mutation_treasury_bps: 2000`, `mutation_burn_bps: 6000`.
 >
-> The **web is on Vercel** (<https://mutapixels.vercel.app>). The **API is still a
-> temporary Cloudflare quick tunnel**; Vercel was built with the tunnel as its API, and
-> the on-chain renderer points at
-> `https://difference-modes-amino-ellen.trycloudflare.com/api/render`. Quick tunnels
-> have no uptime guarantee and change URL if restarted. The durable API path is the
-> committed Render Blueprint (`render.yaml`, `docs/DEPLOY.md`); once Render is live,
-> update `NEXT_PUBLIC_API_URL` / `API_INTERNAL_URL` in Vercel, redeploy, and call
-> `set_renderer_base` with the Render `/api/render` URL.
-> The `MODE=migrate` and `MODE=new` paths in
+> The **web and API both run on Vercel** at <https://mutapixels.vercel.app>. The Hono
+> app is mounted at `web/src/app/api/[...path]/route.ts`; the API is same-origin, so
+> there is no CORS or separate API host. The on-chain renderer is set to
+> `https://mutapixels.vercel.app/api/render` and token #1 metadata was refreshed.
+> `web/src/server` is a generated copy of `server/src` (kept in sync by
+> `scripts/sync-web-server.sh` and CI). The `MODE=migrate` and `MODE=new` paths in
 > [`scripts/deploy-testnet.sh`](scripts/deploy-testnet.sh) remain available for other
 > environments.
 >
@@ -178,8 +174,8 @@ The question: **every way a seller could try to keep the money after a sale.**
 | Contract account key redeploys the code | The testnet v2 account currently has one full-access key held by the deployer. A key holder can redeploy the contract and move the account balance, including vault custody. Production plan: remove that key and record the transaction; the separate owner account can still call owner methods. |
 | Griefing history storage | History is capped at 100 records per token; oldest entries are dropped. The contract pays history storage, so the cap bounds the exposure. |
 | Transfer receiver fails | `nft_transfer_call` uses the standard resolver. A failed receiver returns ownership to the seller and the revert is recorded as `transfer_reverted`. |
-| Seller forges a lounge signature | NEP-413 signature must verify against the challenge nonce, the server recipient and either callbackUrl variant; the signing key must exist on the claimed account; challenges are single-use and expire after 5 minutes; lounge sessions are HMAC-signed and expire after 6 hours. |
-| Seller replays an old signature | Challenges are one-time (`delete` on verify) and carry a fresh 32-byte nonce plus a timestamp; the signed message includes token and account. |
+| Seller forges a lounge signature | NEP-413 signature must verify against the challenge nonce, the server recipient and either callbackUrl variant; the signing key must exist on the claimed account; the challenge is a signed, 5-minute token; lounge sessions are HMAC-signed and expire after 6 hours. |
+| Seller replays an old signature | The challenge is bound to the account, token, nonce and expiry. The API keeps a best-effort used set per function instance; a captured verify could be replayed within the 5-minute TTL across serverless instances. A production deployment should use Vercel KV/Upstash for strict one-time use. |
 | Randomness manipulation | **Known limitation.** Mutations use `env::random_seed()` plus token/nonce/block inputs. This is a prototype; commit-reveal or a VRF is the production design. The mutation table and pity rule are public, so a validator cannot silently change the odds. |
 
 The intent is not “trust us”; the intent is that each row is either enforced by a
@@ -364,16 +360,24 @@ for `MODE=new`).
 
 ### Public demo hosting
 
-The web is live on **Vercel** at <https://mutapixels.vercel.app>; its production env
-currently points at the temporary quick-tunnel API. The durable API path is the
-committed Render Blueprint (`render.yaml`); once Render is live, update
-`NEXT_PUBLIC_API_URL` / `API_INTERNAL_URL` in Vercel and redeploy. `server/Dockerfile`,
-`web/Dockerfile` and `docker-compose.yml` are also smoke-tested with Docker
-(`docker compose up --build` serves the API on `:8788` and the web on `:3001`). For a
-real host, set `CORS_ORIGIN`, build the web with the public `NEXT_PUBLIC_API_URL`, set
-`API_INTERNAL_URL` for server-side metadata, then call `set_renderer_base` and
-`refresh_metadata_batch`. The full path (Docker or Vercel/Render) is in
-[`docs/DEPLOY.md`](docs/DEPLOY.md).
+The web and API are a single **Vercel** project at
+<https://mutapixels.vercel.app>. The Hono app is mounted in the Next app at
+`web/src/app/api/[...path]/route.ts`, so there is no second host or CORS config.
+The on-chain renderer points at `https://mutapixels.vercel.app/api/render`.
+
+- Deploy the current project from `web`: `npx vercel deploy --prod --yes`.
+- If you import the repo fresh in Vercel, set Root Directory = `web`.
+- The production env needs `NEXT_PUBLIC_API_URL=https://mutapixels.vercel.app`,
+  `API_INTERNAL_URL=https://mutapixels.vercel.app`, the public NFT/MUT/Ref variables,
+  plus the server variables (`GATE_SECRET`, `NEAR_RPC_URL`, `NFT_CONTRACT_ID`,
+  `MUT_TOKEN_ID`, `REF_CONTRACT_ID`, `REF_POOL_ID`, `GATE_RECIPIENT`,
+  `RATE_LIMIT_CAPACITY`).
+- `web/src/server` is generated from `server/src`; run
+  `./scripts/sync-web-server.sh` after changing the server.
+
+`server/Dockerfile`, `web/Dockerfile` and `docker-compose.yml` are also smoke-tested
+with Docker (`docker compose up --build` serves the API on `:8788` and the web on
+`:3001`) as a self-hosted alternative.
 
 For an existing v1 deployment, `migrate` preserves the token map and fills new maps
 with empty vaults/histories. New activity credits the vaults; old tokens start at
@@ -406,19 +410,20 @@ zero. The contract storage keys for v1 are unchanged, so the upgrade is in place
 | `GET /api/ref/status/:account` | Ref storage, global/user whitelists, MUT/wNEAR storage, wallet and Ref balances |
 | `GET /api/ref/deposits/:account` | Ref `get_deposits`, polled by the native swap |
 | `GET /api/balance/:account` | `$MUT` balance |
-| `POST /api/gate/:id/challenge` | one-time NEP-413 challenge for the current holder |
+| `POST /api/gate/:id/challenge` | signed, short-lived NEP-413 challenge for the current holder |
 | `POST /api/gate/:id/verify` | verify signature + account access key + ownership |
 | `GET /api/gate/:id` | gated lounge data; re-checks ownership on every request |
 
 ### How the lounge gate works
 
 1. The holder connects a wallet that currently owns the token.
-2. `POST /api/gate/:id/challenge` reads `owner_of(token)` and returns a one-time
-   message containing the token, account, a 32-byte nonce and an expiry.
+2. `POST /api/gate/:id/challenge` reads `owner_of(token)` and returns a signed,
+   self-contained message containing the token, account, a 32-byte nonce and a
+   5-minute expiry.
 3. The wallet signs the NEP-413 message (no transaction, no gas).
-4. `POST /api/gate/:id/verify` checks the signature, checks that the signing key is an
-   access key of the claimed account, re-checks ownership, and issues an HMAC session
-   token bound to `(account, token, exp)`.
+4. `POST /api/gate/:id/verify` verifies the challenge HMAC/expiry, the signature, the
+   signing access key and live ownership, then issues an HMAC session token bound to
+   `(account, token, exp)`.
 5. Every `GET /api/gate/:id` verifies the HMAC, then re-reads the current owner. A
    transfer revokes the previous holder’s session immediately.
 
@@ -468,10 +473,13 @@ mutapixels/
 │   ├── mut_token/          NEP-141 $MUT
 │   └── mutapixels/         NEP-171 + vaults + history + migration
 ├── server/
-│   ├── src/index.ts        API, renderer, lounge gate
+│   ├── src/app.ts          Hono app (also mounted in web/src/server)
+│   ├── src/index.ts        Node entrypoint (local/Docker)
 │   ├── src/nep413.ts       NEP-413 verification
 │   └── src/nep413.test.ts
 ├── web/
+│   ├── src/server/         generated copy of server/src for Vercel Functions
+│   ├── src/app/api/[...path]/route.ts  same-origin Hono mount
 │   ├── src/app/pixels/[id]/page.tsx        mutate / feed / withdraw / transfer
 │   ├── src/app/pixels/[id]/club/page.tsx   holder-only lounge
 │   └── src/app/...                         gallery, Ref pool, home
@@ -482,7 +490,7 @@ mutapixels/
 │   └── deploy-testnet.sh
 ├── docs/
 │   ├── SUBMISSION.md       application fields, X thread, publish/renderer steps
-│   ├── DEPLOY.md           Docker / Vercel + Render public demo path
+│   ├── DEPLOY.md           Vercel (embedded API) / Docker public demo path
 │   ├── KEYS.md             privileged-key inspect/remove checklist
 │   └── screenshots/        cover, index, pixel, ref
 ├── .github/workflows/ci.yml
@@ -544,7 +552,9 @@ session returning `403`.
 - **Lounge gate trust.** Gated content is served by the API; the HMAC secret and the
   RPC endpoint are trusted. The ownership check is live, but a compromised server can
   serve the content anyway. The gate proves holder-key control to the server, not to
-  an on-chain verifier.
+  an on-chain verifier. On Vercel the API is stateless; the used-challenge set is
+  best-effort per function instance, so a captured verify can be replayed within the
+  5-minute TTL across instances. Use Vercel KV/Upstash for strict one-time semantics.
 - **MUT withdrawal failures.** If a holder has no `$MUT` storage, the callback restores
   the amount to the token vault. The NEAR leg is a native transfer and is recorded
   before the promise; a failure of that transfer (deleted account) is not rolled back.
@@ -552,8 +562,9 @@ session returning `403`.
   pending withdrawal entry is not finalized and there is no retry method; a v3 should
   add a bounded recovery path. The normal success/failure branches are tested.
 - **History cap.** 100 records per token, oldest dropped. This bounds storage griefing.
-- **Renderer is local by default.** Token metadata resolves only if `RENDERER_BASE`
-  points to a publicly reachable API.
+- **Renderer.** The current demo renderer is
+  `https://mutapixels.vercel.app/api/render` (set on v2). A self-hosted deployment must
+  point `RENDERER_BASE` at a publicly reachable API and refresh metadata.
 - **Privileged keys.** The v2 contract account currently has one full-access
   deployer key; it can redeploy the contract and move the account balance, including
   vault custody. The separate owner account can change mint/mutation prices and the

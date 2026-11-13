@@ -12,9 +12,8 @@ the application. Nothing here is sent automatically.
 | `$MUT` | `mut-token-192217.testnet` |
 | Ref pool | `ref-finance-101.testnet`, pool `2946` |
 | Demo pixel | token `#1`, owner `dulllink7195.testnet`, vault `0.075 NEAR` |
-| Web | Vercel: `https://mutapixels.vercel.app` |
-| API / renderer | temporary quick tunnel: `https://difference-modes-amino-ellen.trycloudflare.com/api` (Render API pending); local: `http://localhost:8788` |
-| Renderer | public: `https://difference-modes-amino-ellen.trycloudflare.com/api/render` (set on v2) |
+| Web + API | Vercel: `https://mutapixels.vercel.app` (API at `/api`, same origin) |
+| Renderer | public: `https://mutapixels.vercel.app/api/render` (set on v2) |
 | Public repo | **Published:** <https://github.com/heyhey3/mutapixels> — public, CI green |
 | X post / video | **TBD** |
 | Application | **Not sent** |
@@ -69,19 +68,20 @@ the separate `requestId`; reuse it if the API returns a 400/503.
 
 ## Public deployment before the X post
 
-The demo cannot be judged from `localhost`. Current state: a temporary Cloudflare
-quick tunnel is live at <https://difference-modes-amino-ellen.trycloudflare.com>, and
-the v2 renderer points at its `/api/render`. The tunnel is not durable; before final
-judging, do one of:
+The demo cannot be judged from `localhost`. Current state: **web and API are live on
+Vercel** at <https://mutapixels.vercel.app>; the Hono API is mounted same-origin at
+`/api`, and the v2 renderer points at `https://mutapixels.vercel.app/api/render`. This
+is durable: no tunnel or second API host.
 
-1. **Host the API and web durably** (preferred): deploy `server` on Render and `web`
-   on Vercel (the committed `render.yaml` is the Render Blueprint); set
-   `NEXT_PUBLIC_API_URL` / `API_INTERNAL_URL` to the public API, set `CORS_ORIGIN` to
-   the web origin, call `set_renderer_base` with `<api>/api/render`, then call
-   `refresh_metadata_batch` for token #1.
-2. **Local-only + video**: record the full mint → feed → mutate → withdraw → transfer
-   → lounge flow (see `DEMO.md`), attach it to the X post, and state that the demo is
-   local/testnet. The repository README has the run commands.
+1. **Vercel (current)**: one project, Root Directory `web`, Next.js. The API route is
+   `web/src/app/api/[...path]/route.ts`; `web/src/server` is a generated copy of
+   `server/src` (run `./scripts/sync-web-server.sh` after server changes). Set the
+   production env public vars plus `GATE_SECRET`, RPC/contract vars and
+   `API_INTERNAL_URL=https://mutapixels.vercel.app`; deploy with
+   `npx vercel deploy --prod --yes` from `web`.
+2. **Local-only + video** (fallback): record the full mint → feed → mutate → withdraw
+   → transfer → lounge flow (see `DEMO.md`), attach it to the X post, and state that
+   the demo is local/testnet. The repository README has the run commands.
 
 The renderer change is owner-only (`mutapixels-192217.testnet`); it does not require
 the v2 contract account key. After a public renderer is set, verify the media URL from
@@ -112,7 +112,7 @@ After the API is publicly reachable at `https://<api-host>`:
 
 ```bash
 near contract call-function as-transaction v2.mutapixels-192217.testnet \
-  set_renderer_base json-args '"https://<api-host>/api/render"' \
+  set_renderer_base json-args '{"renderer_base":"https://mutapixels.vercel.app/api/render"}' \
   prepaid-gas '30 Tgas' attached-deposit '0 NEAR' \
   sign-as mutapixels-192217.testnet network-config testnet \
   sign-with-legacy-keychain send

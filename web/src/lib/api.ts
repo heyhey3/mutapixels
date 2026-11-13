@@ -1,6 +1,6 @@
-export const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8788";
+export const API = process.env.NEXT_PUBLIC_API_URL || "";
 /** Server-side API base (metadata, server components). Never use in the browser. */
-export const SERVER_API = process.env.API_INTERNAL_URL ?? API;
+export const SERVER_API = process.env.API_INTERNAL_URL || API;
 export const NFT_ID = process.env.NEXT_PUBLIC_NFT_ID ?? "";
 export const MUT_ID = process.env.NEXT_PUBLIC_MUT_ID ?? "";
 export const REF_ID = process.env.NEXT_PUBLIC_REF_ID ?? "";

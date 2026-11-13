@@ -50,6 +50,9 @@ importers:
       '@near-wallet-selector/nightly':
         specifier: 10.1.4
         version: 10.1.4(@near-js/keystores@2.2.5(@near-js/crypto@2.2.5(@near-js/types@2.2.5)(@near-js/utils@2.5.1(@near-js/types@2.5.1)))(@near-js/types@2.2.5))(@near-js/types@2.5.1)(@near-js/utils@2.5.1(@near-js/types@2.5.1))
+      hono:
+        specifier: ^4.13.18
+        version: 4.13.18
       next:
         specifier: 16.4.6
         version: 16.4.6(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)

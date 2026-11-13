@@ -15,3 +15,5 @@ docs/submission.json
 
 # Vercel local link metadata
 .vercel/
+.vercel
+.env*
